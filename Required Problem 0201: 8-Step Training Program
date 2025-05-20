@@ -1,0 +1,82 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+char status[8] = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '};
+
+void show_main_menu() {
+    printf("1. Audition Management\n");
+    printf("2. Training\n");
+    printf("3. Debut\n");
+    printf("Q to quit\n");
+    printf("Select: ");
+}
+
+void show_training_menu() {
+    for (int i = 0; i < 8; i++) {
+        printf("Stage %d [%c]\n", i + 1, status[i] == ' ' ? '-' : status[i]);
+    }
+    printf("Select stage 1-8 (0 to return): ");
+}
+
+void handle_stage(int i) {
+    if (status[i] != ' ') {
+        printf("Already done\n");
+        return;
+    }
+    if (i == 1 && status[0] != 'P') {
+        printf("Pass Stage 1 first\n");
+        return;
+    }
+    if (i >= 2 && (status[0] != 'P' || status[1] != 'P')) {
+        printf("Pass Stage 1 and 2 first\n");
+        return;
+    }
+
+    char y;
+    printf("Enter result? (Y/N): ");
+    scanf(" %c", &y);
+    if (y == 'Y') {
+        char r;
+        printf("Pass training? (P/F): ");
+        scanf(" %c", &r);
+        if (r == 'P' || r == 'F') {
+            status[i] = r;
+            printf("Saved.\n");
+        } else {
+            printf("Wrong input\n");
+        }
+    }
+}
+
+void training_menu() {
+    while (1) {
+        show_training_menu();
+        int s;
+        scanf("%d", &s);
+        if (s == 0) break;
+        if (s >= 1 && s <= 8) {
+            handle_stage(s - 1);
+        } else {
+            printf("Wrong stage\n");
+        }
+    }
+}
+
+int main() {
+    while (1) {
+        show_main_menu();
+        char c;
+        scanf(" %c", &c);
+        if (c == 'q' || c == 'Q' || c == '0') break;
+        if (c == '1') {
+            printf("Audition not ready\n");
+        } else if (c == '2') {
+            training_menu();
+        } else if (c == '3') {
+            printf("Debut not ready\n");
+        } else {
+            printf("Wrong input\n");
+        }
+    }
+    return 0;
+}
