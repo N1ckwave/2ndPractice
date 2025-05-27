@@ -1,0 +1,127 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Member {
+    char name[20];
+    char nick[10];
+};
+
+struct Workout {
+    char cardio[20];
+    char strength[20];
+};
+
+struct Member members[3] = {
+    {"Arthur Dent", "arthur"},
+    {"Ford Prefect", "ford"},
+    {"Trillian", "trill"}
+};
+
+char exercises[5][3][20] = {
+    {"Running", "Cycling", "Fast Walk"},
+    {"Pushups", "Squats", ""},
+    {"Leg Press", "Leg Curl", ""},
+    {"Pullups", "Chinups", ""},
+    {"Plank", "Crunches", ""}
+};
+
+struct Workout routines[3][6];
+
+void show_members() {
+    for(int i=0; i<3; i++) {
+        printf("%s (%s)\n", members[i].name, members[i].nick);
+    }
+}
+
+void set_routine() {
+    char nick[10];
+    int p = -1;
+    
+    show_members();
+    printf("Enter nick: ");
+    scanf("%s", nick);
+    
+    for(int i=0; i<3; i++) {
+        if(strcmp(members[i].nick, nick) == 0) {
+            p = i;
+            break;
+        }
+    }
+    
+    if(p == -1) {
+        printf("Not found!\n");
+        return;
+    }
+    
+    char days[6][10] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    int core_used = 0;
+    
+    for(int d=0; d<6; d++) {
+        printf("\n%s:\n", days[d]);
+        
+        printf("Cardio (1-3): ");
+        int c;
+        scanf("%d", &c);
+        strcpy(routines[p][d].cardio, exercises[0][c-1]);
+        
+        printf("Strength (1-7): ");
+        int s;
+        scanf("%d", &s);
+        
+        if(s > 6 && core_used) {
+            printf("Only 1 core/week!\n");
+            d--;
+            continue;
+        }
+        
+        if(s > 6) core_used = 1;
+        
+        int t = (s-1)/2 + 1;
+        int e = (s-1)%2;
+        strcpy(routines[p][d].strength, exercises[t][e]);
+    }
+}
+
+void view_routine() {
+    char nick[10];
+    int p = -1;
+    
+    show_members();
+    printf("Enter nick: ");
+    scanf("%s", nick);
+    
+    for(int i=0; i<3; i++) {
+        if(strcmp(members[i].nick, nick) == 0) {
+            p = i;
+            break;
+        }
+    }
+    
+    if(p == -1) {
+        printf("Not found!\n");
+        return;
+    }
+    
+    char days[6][10] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    
+    printf("\n%s (%s):\n", members[p].name, members[p].nick);
+    for(int d=0; d<6; d++) {
+        printf("%s: %s + %s\n", days[d], routines[p][d].cardio, routines[p][d].strength);
+    }
+}
+
+int main() {
+    int choice;
+    
+    while(1) {
+        printf("\n1. Set routine\n2. View routine\n3. Exit\n> ");
+        scanf("%d", &choice);
+        
+        if(choice == 1) set_routine();
+        else if(choice == 2) view_routine();
+        else if(choice == 3) break;
+        else printf("Invalid!\n");
+    }
+    
+    return 0;
+}
